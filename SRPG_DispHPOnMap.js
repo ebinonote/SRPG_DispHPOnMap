@@ -1,6 +1,6 @@
 ﻿// =============================================================================
 // SRPG_DispHPOnMap.js
-// Version: 1.00
+// Version: 1.01
 // -----------------------------------------------------------------------------
 // Copyright (c) 2018 ヱビ
 // Released under the MIT license
@@ -12,8 +12,32 @@
 
 
 /*:
- * @plugindesc v1.00 SRPG戦闘中、マップでもHPが確認できるようになるプラグイン。
+ * @plugindesc v1.01 SRPG戦闘中、マップでもHPが確認できるようになるプラグイン。
  * @author ヱビ
+ * 
+ * @param actorHPColor1
+ * @type number
+ * @min 0
+ * @desc アクターのHPゲージの色１（img/system/Window.pngの色の番号）です。
+ * @default 20
+ * 
+ * @param actorHPColor2
+ * @type number
+ * @min 0
+ * @desc アクターのHPゲージの色２（img/system/Window.pngの色の番号）です。
+ * @default 21
+ * 
+ * @param enemyHPColor1
+ * @type number
+ * @min 0
+ * @desc 敵キャラのHPゲージの色１（img/system/Window.pngの色の番号）です。
+ * @default 22
+ * 
+ * @param enemyHPColor2
+ * @type number
+ * @min 0
+ * @desc 敵キャラのHPゲージの色２（img/system/Window.pngの色の番号）です。
+ * @default 23
  * 
  * @help
  * ============================================================================
@@ -27,7 +51,11 @@
  * 更新履歴
  * ============================================================================
  * 
- * Version 0.01
+ * Version 1.01
+ *   アクターのHPゲージ、敵キャラのHPゲージの色を変えられるようにしました。
+ * 
+ * Version 1.00
+ *   公開
  * 
  * ============================================================================
  * 利用規約
@@ -44,6 +72,12 @@
  */
 
 (function() {
+
+    var parameters = PluginManager.parameters('SRPG_DispHPOnMap');
+	var actorHPColor1 = Number(parameters['actorHPColor1']);
+	var actorHPColor2 = Number(parameters['actorHPColor2']);
+	var enemyHPColor1 = Number(parameters['enemyHPColor1']);
+	var enemyHPColor2 = Number(parameters['enemyHPColor2']);
 
 //=============================================================================
 // Sprite_Character
@@ -245,6 +279,23 @@ Window_DispHPGauge.prototype.hpGaugeColor2 = function() {
     return this.textColor(this._battler.hpGaugeColor2());
 };
 */
+
+Window_DispHPGauge.prototype.hpGaugeColor1 = function() {
+	if (!this._battler || this._battler.isActor()) {
+		return this.textColor(actorHPColor1);
+	} else {
+		return this.textColor(enemyHPColor1);
+	}
+};
+
+Window_DispHPGauge.prototype.hpGaugeColor2 = function() {
+	if (!this._battler || this._battler.isActor()) {
+		return this.textColor(actorHPColor2);
+	} else {
+		return this.textColor(enemyHPColor2);
+	}
+};
+
 Window_DispHPGauge.prototype.drawActorHp = function(actor, x, y, width) {
     width = width || 186;
     var color1 = this.hpGaugeColor1();
